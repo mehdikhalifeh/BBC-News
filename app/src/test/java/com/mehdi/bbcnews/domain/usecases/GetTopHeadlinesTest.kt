@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
 import com.mehdi.bbcnews.data.model.responses.Source
+import com.mehdi.bbcnews.domain.NewsSorter
 import com.mehdi.bbcnews.domain.Repository
 import com.mehdi.bbcnews.util.DataState
 import io.mockk.coEvery
@@ -20,12 +21,6 @@ class GetTopHeadlinesTest {
 
     private lateinit var getTopHeadlines: GetTopHeadlines
     private val repository: Repository = mockk()
-
-
-    @Before
-    fun setup() {
-        getTopHeadlines = GetTopHeadlines(repository)
-    }
 
 
     @Test
@@ -51,6 +46,9 @@ class GetTopHeadlinesTest {
 
         coEvery { repository.getTopHeadlines(source) } returns expectedResponse
 
+        val newsSorter = NewsSorter()
+        newsSorter.sort(expectedResponse.articles)
+        getTopHeadlines = GetTopHeadlines(repository, newsSorter)
 
         // When
         val flow = getTopHeadlines.call(source)
@@ -58,7 +56,7 @@ class GetTopHeadlinesTest {
         // Then
         val turbine = flow.testIn(this)
         assertThat(DataState.Loading).isEqualTo(turbine.awaitItem())
-         delay(100)
+        delay(100)
         assertThat(DataState.Success(expectedResponse)).isEqualTo(turbine.awaitItem())
         turbine.awaitComplete()
     }
@@ -71,6 +69,8 @@ class GetTopHeadlinesTest {
             val source = "bbc-news"
             val expectedException = Exception()
             coEvery { repository.getTopHeadlines(source) } throws expectedException
+            val newsSorter = mockk<NewsSorter>()
+            getTopHeadlines = GetTopHeadlines(repository, newsSorter)
 
             // When
             val flow = getTopHeadlines.call(source)

@@ -1,14 +1,15 @@
 package com.mehdi.bbcnews.component
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth.assertThat
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
 import com.mehdi.bbcnews.data.model.responses.Source
 import com.mehdi.bbcnews.domain.usecases.GetTopHeadlines
+import com.mehdi.bbcnews.util.Constants.CACHED_NEWS
 import com.mehdi.bbcnews.util.DataState
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +20,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -27,12 +27,12 @@ class NewsListViewModelTest {
 
     private lateinit var viewModel: NewsListViewModel
     private val getTopHeadlines: GetTopHeadlines = mockk()
+    private val savedStateHandle: SavedStateHandle = mockk()
 
 
     @Before
     fun setup() {
         Dispatchers.setMain(Dispatchers.Unconfined)
-        viewModel = NewsListViewModel(getTopHeadlines)
     }
 
     @After
@@ -59,11 +59,14 @@ class NewsListViewModelTest {
                     )
                 ), "ok", 1
             )
+
             coEvery { getTopHeadlines.call(source) } returns flowOf(
                 DataState.Success(
                     expectedResponse
                 )
             )
+            every { savedStateHandle.get<BbcNewsResponse>(CACHED_NEWS) } returns expectedResponse
+            viewModel = NewsListViewModel(getTopHeadlines, savedStateHandle)
 
             // When
             viewModel.getTopHeadlines(source)
@@ -84,6 +87,8 @@ class NewsListViewModelTest {
                     expectedException
                 )
             )
+            every { savedStateHandle.get<BbcNewsResponse>(CACHED_NEWS) } returns null
+            viewModel = NewsListViewModel(getTopHeadlines, savedStateHandle)
 
             // When
             viewModel.getTopHeadlines(source)

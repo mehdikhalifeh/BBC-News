@@ -1,4 +1,4 @@
-package com.mehdi.bbcnews.util
+package com.mehdi.bbcnews.component.util
 
 import android.os.Bundle
 import androidx.navigation.NavType

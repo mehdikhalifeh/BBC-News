@@ -3,12 +3,13 @@ package com.mehdi.bbcnews.component.navigation.destinations
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.composable
 import com.mehdi.bbcnews.component.ui.screens.detail.DetailNewsList
 import com.mehdi.bbcnews.data.model.responses.Article
-import com.mehdi.bbcnews.util.AssetParamType
+import com.mehdi.bbcnews.component.util.AssetParamType
 import com.mehdi.bbcnews.util.Constants
 import com.mehdi.bbcnews.util.Constants.DETAIL_NEWS_SCREEN
 
@@ -26,7 +27,16 @@ fun NavGraphBuilder.detailNewsComposable() {
                     durationMillis = 700
                 )
             )
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { +it },
+                animationSpec = tween(
+                    durationMillis = 700
+                )
+            )
         }
+
     )
     {
         val article =

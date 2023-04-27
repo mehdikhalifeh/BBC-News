@@ -11,7 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import com.mehdi.bbcnews.BuildConfig
-import com.mehdi.bbcnews.data.model.NewsSorter
 
 @Module
 @InstallIn(SingletonComponent::class)

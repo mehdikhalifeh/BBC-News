@@ -1,7 +1,6 @@
 package com.mehdi.bbcnews.di
 
 import com.mehdi.bbcnews.data.RepositoryImpl
-import com.mehdi.bbcnews.data.model.NewsSorter
 import com.mehdi.bbcnews.data.remote.RemoteDataSource
 import com.mehdi.bbcnews.data.remote.RemoteDataSourceImpl
 import com.mehdi.bbcnews.data.remote.connection.NewsListApi
@@ -19,7 +18,7 @@ object DataModule {
     @Singleton
     @Provides
     fun provideRepository(
-        remoteDataSourceImpl: RemoteDataSourceImpl,
+        remoteDataSourceImpl: RemoteDataSourceImpl
     ): Repository {
         return RepositoryImpl(remoteDataSourceImpl)
     }
@@ -27,8 +26,8 @@ object DataModule {
     @Singleton
     @Provides
     fun provideRemoteDataSource(
-        newsListApi: NewsListApi, newsSorter: NewsSorter
+        newsListApi: NewsListApi
     ): RemoteDataSource {
-        return RemoteDataSourceImpl(newsListApi, newsSorter)
+        return RemoteDataSourceImpl(newsListApi)
     }
 }

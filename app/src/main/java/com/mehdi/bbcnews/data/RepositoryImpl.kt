@@ -5,10 +5,12 @@ import com.mehdi.bbcnews.data.remote.RemoteDataSource
 import com.mehdi.bbcnews.domain.Repository
 import javax.inject.Inject
 
+
 class RepositoryImpl @Inject constructor(
-    private val remoteDataSource: RemoteDataSource
+    private val remoteDataSource: RemoteDataSource,
 ) : Repository {
-    override suspend fun getTopHeadlines(source: String): BbcNewsResponse {
-        return remoteDataSource.getTopHeadlines(source)
-    }
+
+    override suspend fun getTopHeadlines(source: String): BbcNewsResponse =
+        remoteDataSource.getTopHeadlines(source)
 }
+

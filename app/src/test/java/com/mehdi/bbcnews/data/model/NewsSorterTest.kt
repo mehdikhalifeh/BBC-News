@@ -3,6 +3,7 @@ package com.mehdi.bbcnews.data.model
 import com.google.common.truth.Truth.assertThat
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.model.responses.Source
+import com.mehdi.bbcnews.domain.NewsSorter
 import org.junit.Test
 
 class NewsSorterTest {

@@ -6,5 +6,5 @@ object Constants {
     const val DETAIL_NEWS_SCREEN= "detailNews/{article}"
     const val DETAIL_NEWS_ARGUMENT_KEY= "article"
     const val NEWS_SOURCE = "bbc-news"
-
+    const val CACHED_NEWS = "cachedNews"
 }
