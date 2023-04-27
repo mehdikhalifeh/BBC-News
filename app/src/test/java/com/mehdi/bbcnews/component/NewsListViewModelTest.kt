@@ -1,15 +1,12 @@
 package com.mehdi.bbcnews.component
 
-import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth.assertThat
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
 import com.mehdi.bbcnews.data.model.responses.Source
 import com.mehdi.bbcnews.domain.usecases.GetTopHeadlines
-import com.mehdi.bbcnews.util.Constants.CACHED_NEWS
 import com.mehdi.bbcnews.util.DataState
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,12 +24,12 @@ class NewsListViewModelTest {
 
     private lateinit var viewModel: NewsListViewModel
     private val getTopHeadlines: GetTopHeadlines = mockk()
-    private val savedStateHandle: SavedStateHandle = mockk()
 
 
     @Before
     fun setup() {
         Dispatchers.setMain(Dispatchers.Unconfined)
+        viewModel = NewsListViewModel(getTopHeadlines)
     }
 
     @After
@@ -59,17 +56,14 @@ class NewsListViewModelTest {
                     )
                 ), "ok", 1
             )
-
-            coEvery { getTopHeadlines.call(source) } returns flowOf(
+            coEvery { getTopHeadlines(source) } returns flowOf(
                 DataState.Success(
                     expectedResponse
                 )
             )
-            every { savedStateHandle.get<BbcNewsResponse>(CACHED_NEWS) } returns expectedResponse
-            viewModel = NewsListViewModel(getTopHeadlines, savedStateHandle)
 
             // When
-            viewModel.getTopHeadlines(source)
+            viewModel.getTopHeadlines()
             advanceTimeBy(500)
 
             // Then
@@ -82,16 +76,14 @@ class NewsListViewModelTest {
             // Given
             val source = "bbc-news"
             val expectedException = Exception()
-            coEvery { getTopHeadlines.call(source) } returns flowOf(
+            coEvery { getTopHeadlines(source) } returns flowOf(
                 DataState.Error(
                     expectedException
                 )
             )
-            every { savedStateHandle.get<BbcNewsResponse>(CACHED_NEWS) } returns null
-            viewModel = NewsListViewModel(getTopHeadlines, savedStateHandle)
 
             // When
-            viewModel.getTopHeadlines(source)
+            viewModel.getTopHeadlines()
             advanceTimeBy(500)
 
             // Then

@@ -31,6 +31,7 @@ fun MainNewsList(
             ListContent(
                 modifier = Modifier.padding(it),
                 topHeadlines = topHeadlines,
+                newsListViewModel = newsListViewModel,
                 navigateToDetailNewsList = navigateToDetailNewsList
             )
         }

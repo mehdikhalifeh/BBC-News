@@ -11,10 +11,12 @@ import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.mehdi.bbcnews.R
+import com.mehdi.bbcnews.component.NewsListViewModel
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
 import com.mehdi.bbcnews.data.model.responses.Source
 import com.mehdi.bbcnews.util.DataState
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 
@@ -23,6 +25,7 @@ class ListContentTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    val newsListViewModel:NewsListViewModel = mockk(relaxed = true)
     @Test
     fun givenSuccessState_thenHeadlinesListDisplayed() {
         // Given
@@ -54,7 +57,8 @@ class ListContentTest {
             ListContent(
                 modifier = Modifier,
                 topHeadlines = topHeadlines,
-                navigateToDetailNewsList = navigateToDetailNewsList
+                navigateToDetailNewsList = navigateToDetailNewsList,
+                newsListViewModel = newsListViewModel
             )
         }
 
@@ -81,7 +85,8 @@ class ListContentTest {
             ListContent(
                 modifier = Modifier,
                 topHeadlines = topHeadlines,
-                navigateToDetailNewsList = navigateToDetailNewsList
+                navigateToDetailNewsList = navigateToDetailNewsList,
+                newsListViewModel = newsListViewModel
             )
         }
 
@@ -102,7 +107,8 @@ class ListContentTest {
             ListContent(
                 modifier = Modifier,
                 topHeadlines = topHeadlines,
-                navigateToDetailNewsList = navigateToDetailNewsList
+                navigateToDetailNewsList = navigateToDetailNewsList,
+                newsListViewModel = newsListViewModel
             )
         }
         val context: Context = InstrumentationRegistry.getInstrumentation().targetContext

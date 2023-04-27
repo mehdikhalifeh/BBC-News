@@ -5,15 +5,14 @@ import com.google.common.truth.Truth.assertThat
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
 import com.mehdi.bbcnews.data.model.responses.Source
-import com.mehdi.bbcnews.domain.NewsSorter
 import com.mehdi.bbcnews.domain.Repository
+import com.mehdi.bbcnews.domain.sorter.NewsSorter
 import com.mehdi.bbcnews.util.DataState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -51,7 +50,7 @@ class GetTopHeadlinesTest {
         getTopHeadlines = GetTopHeadlines(repository, newsSorter)
 
         // When
-        val flow = getTopHeadlines.call(source)
+        val flow = getTopHeadlines(source)
 
         // Then
         val turbine = flow.testIn(this)
@@ -69,11 +68,11 @@ class GetTopHeadlinesTest {
             val source = "bbc-news"
             val expectedException = Exception()
             coEvery { repository.getTopHeadlines(source) } throws expectedException
-            val newsSorter = mockk<NewsSorter>()
+            val newsSorter = NewsSorter()
             getTopHeadlines = GetTopHeadlines(repository, newsSorter)
 
             // When
-            val flow = getTopHeadlines.call(source)
+            val flow = getTopHeadlines(source)
 
             // Then
             val turbine = flow.testIn(this)

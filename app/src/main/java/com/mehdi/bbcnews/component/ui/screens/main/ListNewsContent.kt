@@ -31,7 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.mehdi.bbcnews.R
+import com.mehdi.bbcnews.component.NewsListViewModel
 import com.mehdi.bbcnews.component.ui.screens.EmptyContent
 import com.mehdi.bbcnews.component.ui.screens.loading.ShimmerListItem
 import com.mehdi.bbcnews.component.ui.theme.CARD_ELEVATION
@@ -44,37 +47,45 @@ import com.mehdi.bbcnews.component.ui.theme.SPACER_TEXT_SIZE
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
 import com.mehdi.bbcnews.data.model.responses.Source
+import com.mehdi.bbcnews.util.Constants.SHIMMER_ITEM
 import com.mehdi.bbcnews.util.DataState
 
 @Composable
 fun ListContent(
     modifier: Modifier,
+    newsListViewModel: NewsListViewModel,
+    navigateToDetailNewsList: (Article) -> Unit,
     topHeadlines: DataState<BbcNewsResponse>,
-    navigateToDetailNewsList: (Article) -> Unit
 ) {
-    when (topHeadlines) {
-        is DataState.Success -> HandleListContent(
-            modifier = modifier,
-            topHeadlines = topHeadlines.data,
-            navigateToDetailNewsList = navigateToDetailNewsList
-        )
+    SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = topHeadlines is DataState.Loading),
+        onRefresh = { newsListViewModel.onRefresh() }) {
+        when (topHeadlines) {
+            is DataState.Success -> {
+                HandleListContent(
+                    modifier = modifier,
+                    topHeadlines = topHeadlines.data,
+                    navigateToDetailNewsList = navigateToDetailNewsList
+                )
+            }
 
-        is DataState.Error -> EmptyContent()
-        is DataState.Loading -> ShowShimmer(
-            modifier = modifier,
-            articleSize = 10,
-        )
+            is DataState.Error -> EmptyContent()
+
+            is DataState.Loading -> ShowShimmer(
+                modifier = modifier, 10
+            )
+        }
     }
 }
+
 
 @Composable
 fun ShowShimmer(
     modifier: Modifier, articleSize: Int
 ) {
-    LazyColumn {
+    LazyColumn(modifier.padding(all = MEDIUM_PADDING)) {
         items(count = articleSize) {
             ShimmerListItem(
-                modifier = modifier.testTag("shimmerListItem$it")
+                modifier = modifier.testTag(SHIMMER_ITEM.plus(it))
             )
         }
     }

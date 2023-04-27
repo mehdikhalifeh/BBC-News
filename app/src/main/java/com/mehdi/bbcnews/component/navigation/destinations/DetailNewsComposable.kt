@@ -9,7 +9,7 @@ import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.composable
 import com.mehdi.bbcnews.component.ui.screens.detail.DetailNewsList
 import com.mehdi.bbcnews.data.model.responses.Article
-import com.mehdi.bbcnews.component.util.AssetParamType
+import com.mehdi.bbcnews.data.util.AssetParamType
 import com.mehdi.bbcnews.util.Constants
 import com.mehdi.bbcnews.util.Constants.DETAIL_NEWS_SCREEN
 
@@ -36,7 +36,6 @@ fun NavGraphBuilder.detailNewsComposable() {
                 )
             )
         }
-
     )
     {
         val article =

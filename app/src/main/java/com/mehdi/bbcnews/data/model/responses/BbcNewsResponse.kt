@@ -13,4 +13,4 @@ data class BbcNewsResponse(
     val status: String,
     @SerializedName("totalResults")
     val totalResults: Int
-) : Parcelable
+):Parcelable

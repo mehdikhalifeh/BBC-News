@@ -1,18 +1,15 @@
 package com.mehdi.bbcnews
 
-import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth.assertThat
 import com.mehdi.bbcnews.component.NewsListViewModel
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
 import com.mehdi.bbcnews.data.model.responses.Source
-import com.mehdi.bbcnews.domain.NewsSorter
 import com.mehdi.bbcnews.domain.Repository
+import com.mehdi.bbcnews.domain.sorter.NewsSorter
 import com.mehdi.bbcnews.domain.usecases.GetTopHeadlines
-import com.mehdi.bbcnews.util.Constants.CACHED_NEWS
 import com.mehdi.bbcnews.util.DataState
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,7 +26,6 @@ import org.junit.Test
 
 class RepositoryAndViewModelIntegrationTest {
 
-    private val savedStateHandle: SavedStateHandle = mockk()
     private val newsSorter = mockk<NewsSorter>(relaxed = true)
 
     @Before
@@ -64,9 +60,8 @@ class RepositoryAndViewModelIntegrationTest {
         val mockRepository = mockk<Repository> {
             coEvery { getTopHeadlines(any()) } returns mockResponse
         }
-        every { savedStateHandle.get<BbcNewsResponse>(CACHED_NEWS) } returns mockResponse
 
-        val viewModel = NewsListViewModel(GetTopHeadlines(mockRepository,newsSorter), savedStateHandle)
+        val viewModel = NewsListViewModel(GetTopHeadlines(mockRepository, newsSorter))
         val source = "bbc-news"
 
         val job = launch {

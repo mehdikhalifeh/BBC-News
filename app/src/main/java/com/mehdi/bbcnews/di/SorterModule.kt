@@ -1,6 +1,6 @@
 package com.mehdi.bbcnews.di
 
-import com.mehdi.bbcnews.domain.NewsSorter
+import com.mehdi.bbcnews.domain.sorter.NewsSorter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

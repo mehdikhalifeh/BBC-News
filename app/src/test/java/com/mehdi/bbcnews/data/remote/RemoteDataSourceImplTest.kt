@@ -46,7 +46,7 @@ class RemoteDataSourceImplTest {
                     title = "Russia's Belgorod sees mass evacuations over undetonated bomb",
                     url = "http://www.bbc.co.uk/news/world-europe-65358070",
                     urlToImage = "https://ichef.bbci.co.uk/news/1024/branded_news/437A/production/_129447271_gettyimages-1252028554.jpg"
-                )
+                ),
             ),
             status = "ok",
             totalResults = 2

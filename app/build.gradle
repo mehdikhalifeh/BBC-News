@@ -49,7 +49,13 @@ android {
             resources.excludes.add("META-INF/*")
         }
     }
-
+    testOptions {
+        packagingOptions {
+            jniLibs {
+                useLegacyPackaging true
+            }
+        }
+    }
     packagingOptions {
         exclude("META-INF/DEPENDENCIES")
         exclude("META-INF/LICENSE")
@@ -91,6 +97,7 @@ dependencies {
     implementation "io.coil-kt:coil-compose:2.2.2"
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation "com.google.accompanist:accompanist-navigation-animation:0.28.0"
+    implementation 'com.google.accompanist:accompanist-swiperefresh:0.24.13-rc'
 
     //Test
     testImplementation 'junit:junit:4.13.2'

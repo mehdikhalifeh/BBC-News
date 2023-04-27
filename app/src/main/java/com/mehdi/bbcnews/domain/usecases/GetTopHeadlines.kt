@@ -1,7 +1,7 @@
 package com.mehdi.bbcnews.domain.usecases
 
-import com.mehdi.bbcnews.domain.NewsSorter
 import com.mehdi.bbcnews.domain.Repository
+import com.mehdi.bbcnews.domain.sorter.NewsSorter
 import com.mehdi.bbcnews.util.DataState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -11,7 +11,7 @@ class GetTopHeadlines @Inject constructor(
     private val repository: Repository,
     private val newsSorter: NewsSorter
 ) {
-    suspend fun call(source: String) = flow {
+    suspend operator fun invoke(source: String) = flow {
         emit(DataState.Loading)
         delay(100)
         try {

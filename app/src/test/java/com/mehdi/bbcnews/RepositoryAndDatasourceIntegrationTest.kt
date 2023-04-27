@@ -7,7 +7,7 @@ import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
 import com.mehdi.bbcnews.data.model.responses.Source
 import com.mehdi.bbcnews.data.remote.RemoteDataSourceImpl
 import com.mehdi.bbcnews.data.remote.connection.NewsListApi
-import com.mehdi.bbcnews.domain.NewsSorter
+import com.mehdi.bbcnews.domain.sorter.NewsSorter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
