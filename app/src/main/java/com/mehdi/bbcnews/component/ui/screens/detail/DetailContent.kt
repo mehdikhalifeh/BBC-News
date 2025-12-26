@@ -27,12 +27,12 @@ import com.mehdi.bbcnews.component.ui.theme.HEIGHT_LINE
 import com.mehdi.bbcnews.component.ui.theme.LARGE_PADDING
 import com.mehdi.bbcnews.component.ui.theme.MEDIUM_PADDING
 import com.mehdi.bbcnews.component.ui.theme.SPACER_HEIGHT
-import com.mehdi.bbcnews.data.model.responses.Article
+import com.mehdi.bbcnews.domain.model.NewsArticle
 
 
 @Composable
 fun DetailContent(
-    modifier: Modifier, article: Article
+    modifier: Modifier, article: NewsArticle
 ) {
     Column(
         modifier = modifier
@@ -78,7 +78,7 @@ fun DetailContent(
 
 @Composable
 private fun HeadlineImage(
-    modifier: Modifier, article: Article
+    modifier: Modifier, article: NewsArticle
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).data(article.urlToImage).crossfade(true)

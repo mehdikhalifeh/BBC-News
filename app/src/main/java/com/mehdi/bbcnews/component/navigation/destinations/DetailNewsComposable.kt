@@ -7,9 +7,9 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.composable
+import com.mehdi.bbcnews.component.navigation.AssetParamType
 import com.mehdi.bbcnews.component.ui.screens.detail.DetailNewsList
-import com.mehdi.bbcnews.data.model.responses.Article
-import com.mehdi.bbcnews.data.util.AssetParamType
+import com.mehdi.bbcnews.domain.model.NewsArticle
 import com.mehdi.bbcnews.util.Constants
 import com.mehdi.bbcnews.util.Constants.DETAIL_NEWS_SCREEN
 
@@ -38,8 +38,9 @@ fun NavGraphBuilder.detailNewsComposable() {
         }
     )
     {
+        @Suppress("DEPRECATION")
         val article =
-            it.arguments?.getParcelable(Constants.DETAIL_NEWS_ARGUMENT_KEY, Article::class.java)
+            it.arguments?.getSerializable(Constants.DETAIL_NEWS_ARGUMENT_KEY) as? NewsArticle
 
         article?.let { it1 -> DetailNewsList(article = it1) }
 

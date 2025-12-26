@@ -11,12 +11,12 @@ import androidx.compose.ui.res.stringResource
 import com.mehdi.bbcnews.R
 import com.mehdi.bbcnews.component.NewsListViewModel
 import com.mehdi.bbcnews.component.ui.screens.AppBar
-import com.mehdi.bbcnews.data.model.responses.Article
+import com.mehdi.bbcnews.domain.model.NewsArticle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNewsList(
-    navigateToDetailNewsList: (Article) -> Unit,
+    navigateToDetailNewsList: (NewsArticle) -> Unit,
     newsListViewModel: NewsListViewModel
 ) {
     val topHeadlines by newsListViewModel.topHeadlines.collectAsState()

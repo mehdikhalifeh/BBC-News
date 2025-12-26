@@ -5,12 +5,12 @@ import androidx.navigation.NavGraphBuilder
 import com.google.accompanist.navigation.animation.composable
 import com.mehdi.bbcnews.component.NewsListViewModel
 import com.mehdi.bbcnews.component.ui.screens.main.MainNewsList
-import com.mehdi.bbcnews.data.model.responses.Article
+import com.mehdi.bbcnews.domain.model.NewsArticle
 import com.mehdi.bbcnews.util.Constants.MAIN_NEWS_SCREEN
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.mainNewsComposable(
-    navigateToDetailNewsList: (Article) -> Unit,
+    navigateToDetailNewsList: (NewsArticle) -> Unit,
     newsListViewModel: NewsListViewModel
 ) {
     composable(

@@ -2,7 +2,7 @@ package com.mehdi.bbcnews.component
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
+import com.mehdi.bbcnews.domain.model.NewsResponse
 import com.mehdi.bbcnews.domain.usecases.GetTopHeadlines
 import com.mehdi.bbcnews.util.Constants.NEWS_SOURCE
 import com.mehdi.bbcnews.util.DataState
@@ -19,9 +19,9 @@ class NewsListViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _topHeadlines: MutableStateFlow<DataState<BbcNewsResponse>> =
+    private val _topHeadlines: MutableStateFlow<DataState<NewsResponse>> =
         MutableStateFlow(DataState.Loading)
-    var topHeadlines: StateFlow<DataState<BbcNewsResponse>> = _topHeadlines
+    var topHeadlines: StateFlow<DataState<NewsResponse>> = _topHeadlines
 
     private var isRefreshing = false
 
@@ -51,7 +51,7 @@ class NewsListViewModel @Inject constructor(
         }
     }
 
-    private fun setTopHeadlinesValue(state: DataState<BbcNewsResponse>) {
+    private fun setTopHeadlinesValue(state: DataState<NewsResponse>) {
         _topHeadlines.value = state
     }
 }

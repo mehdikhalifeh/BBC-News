@@ -44,9 +44,9 @@ import com.mehdi.bbcnews.component.ui.theme.MEDIUM_PADDING
 import com.mehdi.bbcnews.component.ui.theme.NEWS_CORNER_SIZE
 import com.mehdi.bbcnews.component.ui.theme.NEWS_IMAGE_HEIGHT
 import com.mehdi.bbcnews.component.ui.theme.SPACER_TEXT_SIZE
-import com.mehdi.bbcnews.data.model.responses.Article
-import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
-import com.mehdi.bbcnews.data.model.responses.Source
+import com.mehdi.bbcnews.domain.model.NewsArticle
+import com.mehdi.bbcnews.domain.model.NewsResponse
+import com.mehdi.bbcnews.domain.model.NewsSource
 import com.mehdi.bbcnews.util.Constants.SHIMMER_ITEM
 import com.mehdi.bbcnews.util.DataState
 
@@ -54,8 +54,8 @@ import com.mehdi.bbcnews.util.DataState
 fun ListContent(
     modifier: Modifier,
     newsListViewModel: NewsListViewModel,
-    navigateToDetailNewsList: (Article) -> Unit,
-    topHeadlines: DataState<BbcNewsResponse>,
+    navigateToDetailNewsList: (NewsArticle) -> Unit,
+    topHeadlines: DataState<NewsResponse>,
 ) {
     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = topHeadlines is DataState.Loading),
         onRefresh = { newsListViewModel.onRefresh() }) {
@@ -93,7 +93,7 @@ fun ShowShimmer(
 
 @Composable
 fun HandleListContent(
-    modifier: Modifier, topHeadlines: BbcNewsResponse, navigateToDetailNewsList: (Article) -> Unit
+    modifier: Modifier, topHeadlines: NewsResponse, navigateToDetailNewsList: (NewsArticle) -> Unit
 ) {
     if (topHeadlines.articles.isEmpty()) {
         EmptyContent()
@@ -108,7 +108,7 @@ fun HandleListContent(
 
 @Composable
 fun HeadlinesList(
-    modifier: Modifier, topHeadlines: BbcNewsResponse, navigateToDetailNewsList: (Article) -> Unit
+    modifier: Modifier, topHeadlines: NewsResponse, navigateToDetailNewsList: (NewsArticle) -> Unit
 ) {
     LazyColumn {
         items(items = topHeadlines.articles) { article ->
@@ -123,7 +123,7 @@ fun HeadlinesList(
 
 
 @Composable
-private fun NewsImage(article: Article) {
+private fun NewsImage(article: NewsArticle) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).data(article.urlToImage).crossfade(true)
             .build(),
@@ -139,7 +139,7 @@ private fun NewsImage(article: Article) {
 
 @Composable
 fun HeadlinesRow(
-    modifier: Modifier, article: Article, navigateToDetailNewsList: (Article) -> Unit
+    modifier: Modifier, article: NewsArticle, navigateToDetailNewsList: (NewsArticle) -> Unit
 ) {
     ElevatedCard(
         modifier = modifier
@@ -197,12 +197,12 @@ fun HeadlinesRow(
 @Composable
 fun HeadlinesRowPreview() {
     HeadlinesRow(
-        modifier = Modifier, article = Article(
+        modifier = Modifier, article = NewsArticle(
             title = "Fire breaks out on US bridge after fuel tanker explosion",
             description = "One person was killed in the crash which shut down a major motorway.",
             author = "",
             content = "British diplomats and their families have been evacuated from Sudan in a \"complex and rapid\" operation, Prime Minister Rishi Sunak has confirmed. \r\nMr Sunak said work was continuing to ensure the saf… [+870 chars]",
-            source = Source(id = "", name = ""),
+            source = NewsSource(id = "", name = ""),
             publishedAt = "",
             url = "",
             urlToImage = ""

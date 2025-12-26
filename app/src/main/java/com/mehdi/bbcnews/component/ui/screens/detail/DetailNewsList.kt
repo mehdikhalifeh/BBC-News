@@ -6,12 +6,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.mehdi.bbcnews.component.ui.screens.AppBar
-import com.mehdi.bbcnews.data.model.responses.Article
+import com.mehdi.bbcnews.domain.model.NewsArticle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailNewsList(
-    article: Article,
+    article: NewsArticle,
 ) {
     Scaffold(
         topBar = {
