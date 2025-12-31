@@ -105,6 +105,9 @@ fun buildConfigLiteral(value: String): String {
 }
 
 dependencies {
+    implementation(project(":domain"))
+    implementation(project(":data"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -140,10 +143,9 @@ dependencies {
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
 
-// Hilt
+    // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-
 
     // Retrofit
     implementation(libs.retrofit)
