@@ -35,6 +35,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.mehdi.bbcnews.R
 import com.mehdi.bbcnews.component.NewsListViewModel
+import com.mehdi.bbcnews.component.model.NewsArticleUi
+import com.mehdi.bbcnews.component.model.NewsResponseUi
+import com.mehdi.bbcnews.component.model.NewsSourceUi
+import com.mehdi.bbcnews.component.state.NewsListUiState
 import com.mehdi.bbcnews.component.ui.screens.EmptyContent
 import com.mehdi.bbcnews.component.ui.screens.loading.ShimmerListItem
 import com.mehdi.bbcnews.component.ui.theme.CARD_ELEVATION
@@ -44,39 +48,35 @@ import com.mehdi.bbcnews.component.ui.theme.MEDIUM_PADDING
 import com.mehdi.bbcnews.component.ui.theme.NEWS_CORNER_SIZE
 import com.mehdi.bbcnews.component.ui.theme.NEWS_IMAGE_HEIGHT
 import com.mehdi.bbcnews.component.ui.theme.SPACER_TEXT_SIZE
-import com.mehdi.bbcnews.data.model.responses.Article
-import com.mehdi.bbcnews.data.model.responses.BbcNewsResponse
-import com.mehdi.bbcnews.data.model.responses.Source
 import com.mehdi.bbcnews.util.Constants.SHIMMER_ITEM
-import com.mehdi.bbcnews.util.DataState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListContent(
     modifier: Modifier,
     newsListViewModel: NewsListViewModel,
-    navigateToDetailNewsList: (Article) -> Unit,
-    topHeadlines: DataState<BbcNewsResponse>,
+    navigateToDetailNewsList: (NewsArticleUi) -> Unit,
+    topHeadlines: NewsListUiState,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     PullToRefreshBox(
         state = pullToRefreshState,
-        isRefreshing = topHeadlines is DataState.Loading,
+        isRefreshing = topHeadlines is NewsListUiState.Loading,
         onRefresh = { newsListViewModel.onRefresh() },
         modifier = modifier
     ) {
         when (topHeadlines) {
-            is DataState.Success -> {
+            is NewsListUiState.Content -> {
                 HandleListContent(
                     modifier = Modifier,
-                    topHeadlines = topHeadlines.data,
+                    topHeadlines = topHeadlines.response,
                     navigateToDetailNewsList = navigateToDetailNewsList
                 )
             }
 
-            is DataState.Error -> EmptyContent()
+            is NewsListUiState.Error -> EmptyContent()
 
-            is DataState.Loading -> ShowShimmer(
+            is NewsListUiState.Loading -> ShowShimmer(
                 modifier = Modifier, 10
             )
         }
@@ -99,7 +99,9 @@ fun ShowShimmer(
 
 @Composable
 fun HandleListContent(
-    modifier: Modifier, topHeadlines: BbcNewsResponse, navigateToDetailNewsList: (Article) -> Unit
+    modifier: Modifier,
+    topHeadlines: NewsResponseUi,
+    navigateToDetailNewsList: (NewsArticleUi) -> Unit,
 ) {
     if (topHeadlines.articles.isEmpty()) {
         EmptyContent()
@@ -114,7 +116,9 @@ fun HandleListContent(
 
 @Composable
 fun HeadlinesList(
-    modifier: Modifier, topHeadlines: BbcNewsResponse, navigateToDetailNewsList: (Article) -> Unit
+    modifier: Modifier,
+    topHeadlines: NewsResponseUi,
+    navigateToDetailNewsList: (NewsArticleUi) -> Unit,
 ) {
     LazyColumn(modifier = modifier) {
         items(items = topHeadlines.articles) { article ->
@@ -129,7 +133,7 @@ fun HeadlinesList(
 
 
 @Composable
-private fun NewsImage(article: Article) {
+private fun NewsImage(article: NewsArticleUi) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).data(article.urlToImage.orEmpty())
             .crossfade(true)
@@ -146,7 +150,9 @@ private fun NewsImage(article: Article) {
 
 @Composable
 fun HeadlinesRow(
-    modifier: Modifier, article: Article, navigateToDetailNewsList: (Article) -> Unit
+    modifier: Modifier,
+    article: NewsArticleUi,
+    navigateToDetailNewsList: (NewsArticleUi) -> Unit,
 ) {
     ElevatedCard(
         modifier = modifier
@@ -204,12 +210,12 @@ fun HeadlinesRow(
 @Composable
 fun HeadlinesRowPreview() {
     HeadlinesRow(
-        modifier = Modifier, article = Article(
+        modifier = Modifier, article = NewsArticleUi(
             title = "Fire breaks out on US bridge after fuel tanker explosion",
             description = "One person was killed in the crash which shut down a major motorway.",
             author = "",
             content = "British diplomats and their families have been evacuated from Sudan in a \"complex and rapid\" operation, Prime Minister Rishi Sunak has confirmed. \r\nMr Sunak said work was continuing to ensure the saf… [+870 chars]",
-            source = Source(id = "", name = ""),
+            source = NewsSourceUi(id = "", name = ""),
             publishedAt = "",
             url = "",
             urlToImage = ""

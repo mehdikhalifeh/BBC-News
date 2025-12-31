@@ -22,17 +22,17 @@ import androidx.compose.ui.text.font.FontWeight
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.mehdi.bbcnews.R
+import com.mehdi.bbcnews.component.model.NewsArticleUi
 import com.mehdi.bbcnews.component.ui.theme.HEADLINE_IMAGE_HEIGHT
 import com.mehdi.bbcnews.component.ui.theme.HEIGHT_LINE
 import com.mehdi.bbcnews.component.ui.theme.LARGE_PADDING
 import com.mehdi.bbcnews.component.ui.theme.MEDIUM_PADDING
 import com.mehdi.bbcnews.component.ui.theme.SPACER_HEIGHT
-import com.mehdi.bbcnews.data.model.responses.Article
 
 
 @Composable
 fun DetailContent(
-    modifier: Modifier, article: Article
+    modifier: Modifier, article: NewsArticleUi
 ) {
     Column(
         modifier = modifier
@@ -78,7 +78,7 @@ fun DetailContent(
 
 @Composable
 private fun HeadlineImage(
-    modifier: Modifier, article: Article
+    modifier: Modifier, article: NewsArticleUi
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current).data(article.urlToImage.orEmpty())
