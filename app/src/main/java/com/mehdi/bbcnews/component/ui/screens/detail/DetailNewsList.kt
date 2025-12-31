@@ -16,7 +16,7 @@ fun DetailNewsList(
     Scaffold(
         topBar = {
             AppBar(
-                source = article.source.name
+                source = article.source?.name.orEmpty()
             )
         },
         content = {

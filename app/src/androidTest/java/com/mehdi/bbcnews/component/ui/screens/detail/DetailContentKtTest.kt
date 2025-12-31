@@ -41,8 +41,8 @@ class DetailContentTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText(article.title).assertIsDisplayed()
-        composeTestRule.onNodeWithText(article.description).assertIsDisplayed()
-        composeTestRule.onNodeWithText(article.content).assertIsDisplayed()
+        composeTestRule.onNodeWithText(article.title.orEmpty()).assertIsDisplayed()
+        composeTestRule.onNodeWithText(article.description.orEmpty()).assertIsDisplayed()
+        composeTestRule.onNodeWithText(article.content.orEmpty()).assertIsDisplayed()
     }
 }

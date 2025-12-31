@@ -131,7 +131,8 @@ fun HeadlinesList(
 @Composable
 private fun NewsImage(article: Article) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current).data(article.urlToImage).crossfade(true)
+        model = ImageRequest.Builder(LocalContext.current).data(article.urlToImage.orEmpty())
+            .crossfade(true)
             .build(),
         placeholder = painterResource(R.drawable.placeholder),
         contentDescription = null,
@@ -170,7 +171,7 @@ fun HeadlinesRow(
                     .align(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = article.title,
+                    text = article.title.orEmpty(),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
                     fontFamily = FontFamily.SansSerif,
@@ -180,7 +181,7 @@ fun HeadlinesRow(
                     )
                 Spacer(modifier = Modifier.height(SPACER_TEXT_SIZE))
                 Text(
-                    text = article.description,
+                    text = article.description.orEmpty(),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = FontFamily.SansSerif,
                     lineHeight = HEIGHT_LINE,
@@ -188,7 +189,7 @@ fun HeadlinesRow(
                 )
                 Spacer(modifier = Modifier.height(SPACER_TEXT_SIZE))
                 Text(
-                    text = article.content,
+                    text = article.content.orEmpty(),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = FontFamily.SansSerif,
                     lineHeight = HEIGHT_LINE,
