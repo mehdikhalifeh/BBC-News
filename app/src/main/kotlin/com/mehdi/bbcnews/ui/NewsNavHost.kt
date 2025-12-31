@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -81,12 +83,16 @@ private fun ArticleDetailScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         if (!article.imageUrl.isNullOrBlank()) {
-            AsyncImage(
-                model = article.imageUrl,
-                contentDescription = article.title,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                AsyncImage(
+                    model = article.imageUrl,
+                    contentDescription = article.title,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
         Text(text = article.title, style = MaterialTheme.typography.headlineSmall)
         if (!article.source.isNullOrBlank()) {
@@ -95,11 +101,12 @@ private fun ArticleDetailScreen(
         if (!article.publishedAt.isNullOrBlank()) {
             Text(text = article.publishedAt, style = MaterialTheme.typography.labelMedium)
         }
-        if (article.description.isNotBlank()) {
-            Text(text = article.description, style = MaterialTheme.typography.bodyLarge)
-        }
+        val description = article.description.ifBlank { "No description available." }
+        Text(text = description, style = MaterialTheme.typography.bodyLarge)
         if (!article.content.isNullOrBlank()) {
             Text(text = article.content, style = MaterialTheme.typography.bodyMedium)
+        } else {
+            Text(text = "No additional content available.", style = MaterialTheme.typography.bodyMedium)
         }
         if (!article.url.isNullOrBlank()) {
             Button(onClick = {

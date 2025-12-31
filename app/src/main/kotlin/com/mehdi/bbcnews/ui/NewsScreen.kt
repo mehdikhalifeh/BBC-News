@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -98,6 +99,7 @@ private fun NewsCard(
                     contentDescription = article.title,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(180.dp)
                         .padding(bottom = 12.dp),
                     contentScale = ContentScale.Crop
                 )
