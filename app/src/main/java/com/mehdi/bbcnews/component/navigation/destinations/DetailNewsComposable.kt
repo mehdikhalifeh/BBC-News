@@ -1,12 +1,11 @@
 package com.mehdi.bbcnews.component.navigation.destinations
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.composable
 import com.mehdi.bbcnews.component.ui.screens.detail.DetailNewsList
 import com.mehdi.bbcnews.data.model.responses.Article
 import com.mehdi.bbcnews.data.util.AssetParamType
@@ -45,3 +44,4 @@ fun NavGraphBuilder.detailNewsComposable() {
 
     }
 }
+import androidx.compose.animation.ExperimentalAnimationApi

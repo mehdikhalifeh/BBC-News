@@ -38,7 +38,7 @@ fun EmptyContent() {
             text = stringResource(id = R.string.empty_content),
             color = MaterialTheme.colorScheme.inverseOnSurface,
             fontWeight = FontWeight.Bold,
-            fontSize = MaterialTheme.typography.headlineMedium.fontSize
+            style = MaterialTheme.typography.headlineMedium
         )
     }
 }
