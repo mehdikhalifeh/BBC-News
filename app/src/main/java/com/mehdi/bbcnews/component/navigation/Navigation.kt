@@ -1,5 +1,6 @@
 package com.mehdi.bbcnews.component.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -26,4 +27,3 @@ fun SetUpNavigation(
         detailNewsComposable()
     }
 }
-import androidx.compose.animation.ExperimentalAnimationApi
