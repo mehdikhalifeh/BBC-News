@@ -51,7 +51,7 @@ fun DetailContent(
             Text(
                 text = article.title,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                style = MaterialTheme.typography.titleLarge,
                 fontFamily = FontFamily.SansSerif,
                 lineHeight = HEIGHT_LINE,
                 fontWeight = FontWeight.Bold,
@@ -62,7 +62,7 @@ fun DetailContent(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = FontFamily.SansSerif,
                 lineHeight = HEIGHT_LINE,
-                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(SPACER_HEIGHT))
             Text(
@@ -70,7 +70,7 @@ fun DetailContent(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = FontFamily.SansSerif,
                 lineHeight = HEIGHT_LINE,
-                fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                style = MaterialTheme.typography.titleSmall,
             )
         }
     }

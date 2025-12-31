@@ -116,8 +116,6 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.accompanist.navigation.animation)
-    implementation(libs.accompanist.swiperefresh)
     kapt(libs.kotlin.metadata.jvm)
 
     // Test

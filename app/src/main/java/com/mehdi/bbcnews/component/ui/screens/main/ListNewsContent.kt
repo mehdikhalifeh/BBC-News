@@ -15,9 +15,11 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,8 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.mehdi.bbcnews.R
 import com.mehdi.bbcnews.component.NewsListViewModel
 import com.mehdi.bbcnews.component.ui.screens.EmptyContent
@@ -50,6 +50,7 @@ import com.mehdi.bbcnews.data.model.responses.Source
 import com.mehdi.bbcnews.util.Constants.SHIMMER_ITEM
 import com.mehdi.bbcnews.util.DataState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListContent(
     modifier: Modifier,
@@ -57,8 +58,13 @@ fun ListContent(
     navigateToDetailNewsList: (Article) -> Unit,
     topHeadlines: DataState<BbcNewsResponse>,
 ) {
-    SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = topHeadlines is DataState.Loading),
-        onRefresh = { newsListViewModel.onRefresh() }) {
+    val pullToRefreshState = rememberPullToRefreshState()
+    PullToRefreshBox(
+        state = pullToRefreshState,
+        isRefreshing = topHeadlines is DataState.Loading,
+        onRefresh = { newsListViewModel.onRefresh() },
+        modifier = modifier
+    ) {
         when (topHeadlines) {
             is DataState.Success -> {
                 HandleListContent(
@@ -166,7 +172,7 @@ fun HeadlinesRow(
                 Text(
                     text = article.title,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = typography.titleLarge.fontSize,
+                    style = MaterialTheme.typography.titleLarge,
                     fontFamily = FontFamily.SansSerif,
                     lineHeight = HEIGHT_LINE,
                     fontWeight = FontWeight.Bold,
@@ -178,7 +184,7 @@ fun HeadlinesRow(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = FontFamily.SansSerif,
                     lineHeight = HEIGHT_LINE,
-                    fontSize = typography.titleMedium.fontSize,
+                    style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(modifier = Modifier.height(SPACER_TEXT_SIZE))
                 Text(
@@ -186,7 +192,7 @@ fun HeadlinesRow(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = FontFamily.SansSerif,
                     lineHeight = HEIGHT_LINE,
-                    fontSize = typography.titleSmall.fontSize,
+                    style = MaterialTheme.typography.titleSmall,
                 )
             }
         }
