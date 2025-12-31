@@ -16,6 +16,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -29,11 +30,11 @@ class NewsListViewModelTest {
 
     private lateinit var viewModel: NewsListViewModel
     private val getTopHeadlines: GetTopHeadlinesUseCase = mockk()
-
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
-        Dispatchers.setMain(Dispatchers.Unconfined)
+        Dispatchers.setMain(testDispatcher)
         coEvery { getTopHeadlines("bbc-news") } returns flowOf(Result.Loading) // Default fallback
     }
 

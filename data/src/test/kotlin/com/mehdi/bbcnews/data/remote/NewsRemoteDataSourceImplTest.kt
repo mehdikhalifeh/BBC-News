@@ -18,7 +18,7 @@ class NewsRemoteDataSourceImplTest {
     private val remoteDataSource = NewsRemoteDataSourceImpl(newsListApi)
 
     @Test
-    fun `getTopHeadlines returns sorted articles`() = runTest {
+    fun `getTopHeadlines returns response from api`() = runTest {
         val response = NewsResponseDto(
             listOf(
                 ArticleDto(

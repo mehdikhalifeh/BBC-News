@@ -32,7 +32,7 @@ class NewsListApiTest {
     
     @Test
     fun testGetTopHeadlines() = runBlocking {
-        val responseJson = FakeResponseBody().returnResponse()
+        val responseJson = FakeResponseBody.returnResponse
         mockWebServer.enqueue(MockResponse().setBody(responseJson))
         
         val result = newsListApi.getTopHeadlines("bbc-news")
@@ -44,8 +44,9 @@ class NewsListApiTest {
         assertThat(result.status).isEqualTo("ok")
         assertThat(result.totalResults).isEqualTo(10)
         
-        val articles = result.articles!!
-        assertThat(articles.size).isEqualTo(10)
+        val articles = result.articles
+        assertThat(articles).isNotNull()
+        assertThat(articles!!.size).isEqualTo(10)
         assertThat(articles[0].author).isEqualTo("BBC News")
         assertThat(articles[0].title).isEqualTo("Dame Edna's memorable moments in 60 seconds")
         assertThat(articles[0].description).isEqualTo("A look back at some laughs from the comedian, Barry Humphries, best known for character Dame Edna Everage.")
