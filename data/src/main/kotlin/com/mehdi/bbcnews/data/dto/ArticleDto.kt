@@ -9,6 +9,8 @@ data class ArticleDto(
     val title: String?,
     @SerializedName("description")
     val description: String?,
+    @SerializedName("content")
+    val content: String?,
     @SerializedName("urlToImage")
     val imageUrl: String?,
     @SerializedName("url")

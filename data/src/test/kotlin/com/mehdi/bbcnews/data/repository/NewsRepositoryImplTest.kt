@@ -24,6 +24,7 @@ class NewsRepositoryImplTest {
                         id = "id-1",
                         title = "Title",
                         description = "Desc",
+                        content = "Full content",
                         imageUrl = "https://image.example/1.jpg",
                         url = "https://news.example/1",
                         source = null,

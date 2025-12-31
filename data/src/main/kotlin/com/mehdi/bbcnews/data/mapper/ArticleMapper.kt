@@ -9,6 +9,7 @@ class ArticleMapper {
             id = dto.id.orEmpty(),
             title = dto.title.orEmpty(),
             description = dto.description,
+            content = dto.content,
             imageUrl = dto.imageUrl,
             url = dto.url,
             source = dto.source?.name,

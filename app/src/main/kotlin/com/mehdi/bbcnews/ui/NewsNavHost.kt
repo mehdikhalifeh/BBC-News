@@ -98,6 +98,9 @@ private fun ArticleDetailScreen(
         if (article.description.isNotBlank()) {
             Text(text = article.description, style = MaterialTheme.typography.bodyLarge)
         }
+        if (!article.content.isNullOrBlank()) {
+            Text(text = article.content, style = MaterialTheme.typography.bodyMedium)
+        }
         if (!article.url.isNullOrBlank()) {
             Button(onClick = {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(article.url))

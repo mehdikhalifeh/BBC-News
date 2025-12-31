@@ -16,6 +16,7 @@ class GetTopHeadlinesUseCaseTest {
                 id = "1",
                 title = "Headline",
                 description = "Description",
+                content = "Full content",
                 imageUrl = "https://image.example/1.jpg",
                 url = "https://news.example/1",
                 source = "BBC",

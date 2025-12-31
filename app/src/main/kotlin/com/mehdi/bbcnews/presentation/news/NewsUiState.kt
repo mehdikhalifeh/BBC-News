@@ -13,6 +13,7 @@ sealed class NewsUiState {
                 NewsUiModel(
                     title = article.title,
                     description = article.description.orEmpty(),
+                    content = article.content,
                     imageUrl = article.imageUrl,
                     url = article.url,
                     source = article.source,
@@ -26,6 +27,7 @@ sealed class NewsUiState {
 data class NewsUiModel(
     val title: String,
     val description: String,
+    val content: String?,
     val imageUrl: String?,
     val url: String?,
     val source: String?,
