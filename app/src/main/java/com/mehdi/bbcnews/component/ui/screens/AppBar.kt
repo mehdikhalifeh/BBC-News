@@ -1,6 +1,5 @@
 package com.mehdi.bbcnews.component.ui.screens
 
-import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,7 +21,7 @@ fun AppBar(
                 text = source,
             )
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = Color.White,
         )
