@@ -24,7 +24,10 @@ class NewsRepositoryImplTest {
                         id = "id-1",
                         title = "Title",
                         description = "Desc",
-                        imageUrl = "https://image.example/1.jpg"
+                        imageUrl = "https://image.example/1.jpg",
+                        url = "https://news.example/1",
+                        source = null,
+                        publishedAt = "2024-01-01T00:00:00Z"
                     )
                 )
             }

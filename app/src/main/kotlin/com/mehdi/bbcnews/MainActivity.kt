@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.MaterialTheme
 import com.mehdi.bbcnews.presentation.news.NewsViewModel
-import com.mehdi.bbcnews.ui.NewsScreen
+import com.mehdi.bbcnews.ui.NewsNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                NewsScreen(viewModel = newsViewModel)
+                NewsNavHost(viewModel = newsViewModel)
             }
         }
     }

@@ -16,7 +16,10 @@ class GetTopHeadlinesUseCaseTest {
                 id = "1",
                 title = "Headline",
                 description = "Description",
-                imageUrl = "https://image.example/1.jpg"
+                imageUrl = "https://image.example/1.jpg",
+                url = "https://news.example/1",
+                source = "BBC",
+                publishedAt = "2024-01-01T00:00:00Z"
             )
         )
         val repository = object : NewsRepository {

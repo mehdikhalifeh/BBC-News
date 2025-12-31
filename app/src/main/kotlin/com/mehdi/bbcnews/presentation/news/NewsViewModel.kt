@@ -20,6 +20,9 @@ class NewsViewModel @Inject constructor(
     private val _state = MutableStateFlow<NewsUiState>(NewsUiState.Loading)
     val state: StateFlow<NewsUiState> = _state.asStateFlow()
 
+    private val _selectedArticle = MutableStateFlow<NewsUiModel?>(null)
+    val selectedArticle: StateFlow<NewsUiModel?> = _selectedArticle.asStateFlow()
+
     init {
         fetchHeadlines()
     }
@@ -36,6 +39,10 @@ class NewsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun selectArticle(article: NewsUiModel) {
+        _selectedArticle.value = article
     }
 
     private fun DomainError.toMessage(): String {
