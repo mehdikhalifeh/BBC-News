@@ -1,6 +1,6 @@
 package com.mehdi.bbcnews.di
 
-import com.mehdi.bbcnews.data.remote.connection.NewsListApi
+import com.mehdi.bbcnews.data.remote.NewsListApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,8 +19,17 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().readTimeout(15, TimeUnit.SECONDS)
-            .connectTimeout(15, TimeUnit.SECONDS).build()
+        return OkHttpClient.Builder()
+            .readTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val request = chain.request()
+                    .newBuilder()
+                    .addHeader("x-api-key", BuildConfig.API_KEY)
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
     }
 
     @Singleton

@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "BBC News"
-include(":app")
+include(":app", ":domain", ":data")

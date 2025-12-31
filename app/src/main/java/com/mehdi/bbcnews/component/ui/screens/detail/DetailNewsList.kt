@@ -5,18 +5,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.mehdi.bbcnews.component.model.NewsArticleUi
 import com.mehdi.bbcnews.component.ui.screens.AppBar
-import com.mehdi.bbcnews.data.model.responses.Article
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailNewsList(
-    article: Article,
+    article: NewsArticleUi,
 ) {
     Scaffold(
         topBar = {
             AppBar(
-                source = article.source?.name.orEmpty()
+                source = article.source.name
             )
         },
         content = {
