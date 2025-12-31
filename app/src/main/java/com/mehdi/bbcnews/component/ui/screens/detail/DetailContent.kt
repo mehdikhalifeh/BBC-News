@@ -49,7 +49,7 @@ fun DetailContent(
             )
 
             Text(
-                text = article.title,
+                text = article.title.orEmpty(),
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleLarge,
                 fontFamily = FontFamily.SansSerif,
@@ -58,7 +58,7 @@ fun DetailContent(
             )
             Spacer(modifier = Modifier.height(SPACER_HEIGHT))
             Text(
-                text = article.description,
+                text = article.description.orEmpty(),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = FontFamily.SansSerif,
                 lineHeight = HEIGHT_LINE,
@@ -66,7 +66,7 @@ fun DetailContent(
             )
             Spacer(modifier = Modifier.height(SPACER_HEIGHT))
             Text(
-                text = article.content,
+                text = article.content.orEmpty(),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontFamily = FontFamily.SansSerif,
                 lineHeight = HEIGHT_LINE,
@@ -81,7 +81,8 @@ private fun HeadlineImage(
     modifier: Modifier, article: Article
 ) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current).data(article.urlToImage).crossfade(true)
+        model = ImageRequest.Builder(LocalContext.current).data(article.urlToImage.orEmpty())
+            .crossfade(true)
             .build(),
         placeholder = painterResource(R.drawable.placeholder),
         contentDescription = null,

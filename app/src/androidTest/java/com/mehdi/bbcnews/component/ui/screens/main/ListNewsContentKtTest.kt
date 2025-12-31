@@ -63,14 +63,14 @@ class ListContentTest {
         }
 
         // Then
-        composeTestRule.onNodeWithText(topHeadlines.data.articles[0].title).assertIsDisplayed()
-        composeTestRule.onNodeWithText(topHeadlines.data.articles[0].description)
+        composeTestRule.onNodeWithText(topHeadlines.data.articles[0].title.orEmpty()).assertIsDisplayed()
+        composeTestRule.onNodeWithText(topHeadlines.data.articles[0].description.orEmpty())
             .assertIsDisplayed()
-        composeTestRule.onNodeWithText(topHeadlines.data.articles[0].content).assertIsDisplayed()
+        composeTestRule.onNodeWithText(topHeadlines.data.articles[0].content.orEmpty()).assertIsDisplayed()
 
 
         val articleToClick = topHeadlines.data.articles[0]
-        composeTestRule.onNodeWithText(topHeadlines.data.articles[0].title).performClick()
+        composeTestRule.onNodeWithText(topHeadlines.data.articles[0].title.orEmpty()).performClick()
         assertThat(clickedArticle).isEqualTo(articleToClick)
     }
 
