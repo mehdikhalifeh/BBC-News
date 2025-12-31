@@ -1,6 +1,6 @@
 package com.mehdi.bbcnews.domain.usecase
 
-import app.cash.turbine.testIn
+import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import com.mehdi.bbcnews.domain.model.NewsArticle
 import com.mehdi.bbcnews.domain.model.NewsResponse
@@ -12,7 +12,6 @@ import com.mehdi.bbcnews.domain.sorter.NewsSorter
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -53,11 +52,11 @@ class GetTopHeadlinesUseCaseTest {
         val flow = getTopHeadlines(source)
 
         // Then
-        val turbine = flow.testIn(this)
-        assertThat(Result.Loading).isEqualTo(turbine.awaitItem())
-        delay(100)
-        assertThat(Result.Success(expectedResponse)).isEqualTo(turbine.awaitItem())
-        turbine.awaitComplete()
+        flow.test {
+            assertThat(Result.Loading).isEqualTo(awaitItem())
+            assertThat(Result.Success(expectedResponse)).isEqualTo(awaitItem())
+            awaitComplete()
+        }
     }
 
 
@@ -75,10 +74,10 @@ class GetTopHeadlinesUseCaseTest {
             val flow = getTopHeadlines(source)
 
             // Then
-            val turbine = flow.testIn(this)
-            assertThat(Result.Loading).isEqualTo(turbine.awaitItem())
-            delay(100)
-            assertThat(Result.Failure(expectedError)).isEqualTo(turbine.awaitItem())
-            turbine.awaitComplete()
+            flow.test {
+                assertThat(Result.Loading).isEqualTo(awaitItem())
+                assertThat(Result.Failure(expectedError)).isEqualTo(awaitItem())
+                awaitComplete()
+            }
         }
 }

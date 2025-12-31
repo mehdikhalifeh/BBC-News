@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.mehdi.bbcnews.data.remote.NewsListApiTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-12-31T22:02:57.362Z" hostname="DESKTOP-KLIOH9S" time="0.96">
+  <properties/>
+  <testcase name="testGetTopHeadlines" classname="com.mehdi.bbcnews.data.remote.NewsListApiTest" time="0.96"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
