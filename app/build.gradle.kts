@@ -1,3 +1,7 @@
+import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import org.gradle.api.Project
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -148,6 +152,3 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging.interceptor)
 }
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
-import org.gradle.api.Project
-import java.util.Properties
