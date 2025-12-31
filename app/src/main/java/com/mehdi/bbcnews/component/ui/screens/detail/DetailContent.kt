@@ -40,12 +40,12 @@ fun DetailContent(
             .fillMaxWidth()
     ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .weight(weight =1f, fill = false)
+                .weight(weight = 1f, fill = false)
         ) {
             HeadlineImage(
-                article = article, modifier = modifier
+                article = article, modifier = Modifier
             )
 
             Text(

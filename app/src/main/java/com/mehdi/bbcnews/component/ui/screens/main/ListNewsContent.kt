@@ -68,7 +68,7 @@ fun ListContent(
         when (topHeadlines) {
             is DataState.Success -> {
                 HandleListContent(
-                    modifier = modifier,
+                    modifier = Modifier,
                     topHeadlines = topHeadlines.data,
                     navigateToDetailNewsList = navigateToDetailNewsList
                 )
@@ -77,7 +77,7 @@ fun ListContent(
             is DataState.Error -> EmptyContent()
 
             is DataState.Loading -> ShowShimmer(
-                modifier = modifier, 10
+                modifier = Modifier, 10
             )
         }
     }
@@ -88,10 +88,10 @@ fun ListContent(
 fun ShowShimmer(
     modifier: Modifier, articleSize: Int
 ) {
-    LazyColumn(modifier.padding(all = MEDIUM_PADDING)) {
+    LazyColumn(modifier = modifier.padding(all = MEDIUM_PADDING)) {
         items(count = articleSize) {
             ShimmerListItem(
-                modifier = modifier.testTag(SHIMMER_ITEM.plus(it))
+                modifier = Modifier.testTag(SHIMMER_ITEM.plus(it))
             )
         }
     }
@@ -116,10 +116,10 @@ fun HandleListContent(
 fun HeadlinesList(
     modifier: Modifier, topHeadlines: BbcNewsResponse, navigateToDetailNewsList: (Article) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(items = topHeadlines.articles) { article ->
             HeadlinesRow(
-                modifier = modifier,
+                modifier = Modifier,
                 article = article,
                 navigateToDetailNewsList = navigateToDetailNewsList
             )
