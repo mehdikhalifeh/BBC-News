@@ -43,13 +43,15 @@ class NewsListApiTest {
         
         assertThat(result.status).isEqualTo("ok")
         assertThat(result.totalResults).isEqualTo(10)
-        assertThat(result.articles.size).isEqualTo(10)
-        assertThat(result.articles[0].author).isEqualTo("BBC News")
-        assertThat(result.articles[0].title).isEqualTo("Dame Edna's memorable moments in 60 seconds")
-        assertThat(result.articles[0].description).isEqualTo("A look back at some laughs from the comedian, Barry Humphries, best known for character Dame Edna Everage.")
-        assertThat(result.articles[0].url).isEqualTo("http://www.bbc.co.uk/news/entertainment-arts-65358301")
-        assertThat(result.articles[0].urlToImage).isEqualTo("https://ichef.bbci.co.uk/news/1024/branded_news/4EE2/production/_129449102_b5f6c0752bee38fc657f098fb3387e303ad56ccb0_290_2364_13291000x563.jpg")
-        assertThat(result.articles[0].publishedAt).isEqualTo("2023-04-22T15:37:19.3827616Z")
-        assertThat(result.articles[0].content).isEqualTo("A look back at some of the funniest moments from Dame Edna Everage.\r\nShe was one of comedian Barry Humphries' most known characters. Humphries has died at the age of 89.\r\nRead more about the star's l… [+8 chars]")
+        
+        val articles = result.articles!!
+        assertThat(articles.size).isEqualTo(10)
+        assertThat(articles[0].author).isEqualTo("BBC News")
+        assertThat(articles[0].title).isEqualTo("Dame Edna's memorable moments in 60 seconds")
+        assertThat(articles[0].description).isEqualTo("A look back at some laughs from the comedian, Barry Humphries, best known for character Dame Edna Everage.")
+        assertThat(articles[0].url).isEqualTo("http://www.bbc.co.uk/news/entertainment-arts-65358301")
+        assertThat(articles[0].urlToImage).isEqualTo("https://ichef.bbci.co.uk/news/1024/branded_news/4EE2/production/_129449102_b5f6c0752bee38fc657f098fb3387e303ad56ccb0_290_2364_13291000x563.jpg")
+        assertThat(articles[0].publishedAt).isEqualTo("2023-04-22T15:37:19.3827616Z")
+        assertThat(articles[0].content).isEqualTo("A look back at some of the funniest moments from Dame Edna Everage.\r\nShe was one of comedian Barry Humphries' most known characters. Humphries has died at the age of 89.\r\nRead more about the star's l… [+8 chars]")
     }
 }

@@ -34,7 +34,7 @@ class NewsListViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(Dispatchers.Unconfined)
-        viewModel = NewsListViewModel(getTopHeadlines)
+        coEvery { getTopHeadlines("bbc-news") } returns flowOf(Result.Loading) // Default fallback
     }
 
     @After
@@ -66,6 +66,7 @@ class NewsListViewModelTest {
                     expectedResponse
                 )
             )
+            viewModel = NewsListViewModel(getTopHeadlines)
 
             // When
             viewModel.loadTopHeadlines()
@@ -103,6 +104,7 @@ class NewsListViewModelTest {
             coEvery { getTopHeadlines(source) } returns flowOf(
                 Result.Failure(expectedError)
             )
+            viewModel = NewsListViewModel(getTopHeadlines)
 
             // When
             viewModel.loadTopHeadlines()
