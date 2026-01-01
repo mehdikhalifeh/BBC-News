@@ -10,6 +10,8 @@ import com.mehdi.bbcnews.domain.usecase.GetTopHeadlinesUseCase
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
@@ -46,6 +48,7 @@ class HiltComponentTest {
     }
 
     @Module
+    @InstallIn(SingletonComponent::class)
     object TestApiModule {
         @Provides
         fun provideNewsListApi(): NewsListApi {
@@ -73,4 +76,3 @@ class HiltComponentTest {
         }
     }
 }
-
