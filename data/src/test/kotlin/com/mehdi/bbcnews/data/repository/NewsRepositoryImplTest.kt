@@ -9,8 +9,13 @@ import com.mehdi.bbcnews.domain.result.Result
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import java.io.IOException
+import kotlinx.coroutines.test.runTest
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Test
+import retrofit2.HttpException
+import retrofit2.Response
 
 class NewsRepositoryImplTest {
 
@@ -18,7 +23,7 @@ class NewsRepositoryImplTest {
     private val repository = NewsRepositoryImpl(mockRemoteDataSource)
 
     @Test
-    fun `getTopHeadlines returns expected result`() = runBlocking {
+    fun `getTopHeadlines returns expected result`() = runTest {
         val source = "bbc-news"
         val response = NewsResponseDto(
             listOf(
@@ -48,7 +53,7 @@ class NewsRepositoryImplTest {
     }
 
     @Test
-    fun `getTopHeadlines returns empty response`() = runBlocking {
+    fun `getTopHeadlines returns empty response`() = runTest {
         val response = NewsResponseDto(emptyList(), "ok", 0)
         coEvery { mockRemoteDataSource.getTopHeadlines("bbc-news") } returns response
 
@@ -58,5 +63,49 @@ class NewsRepositoryImplTest {
         assertThat(success.data.articles).isEmpty()
         assertThat(success.data.status).isEqualTo("ok")
         assertThat(success.data.totalResults).isEqualTo(0)
+    }
+
+    @Test
+    fun `getTopHeadlines returns http error when api throws HttpException`() = runTest {
+        val responseBody = "Not found".toResponseBody("text/plain".toMediaType())
+        val exception = HttpException(Response.error<NewsResponseDto>(404, responseBody))
+        coEvery { mockRemoteDataSource.getTopHeadlines("bbc-news") } throws exception
+
+        val result = repository.getTopHeadlines("bbc-news")
+
+        assertThat(result).isInstanceOf(Result.Failure::class.java)
+        val failure = result as Result.Failure
+        assertThat(failure.error).isInstanceOf(com.mehdi.bbcnews.domain.result.DomainError.Http::class.java)
+        val httpError = failure.error as com.mehdi.bbcnews.domain.result.DomainError.Http
+        assertThat(httpError.code).isEqualTo(404)
+        assertThat(httpError.message).contains("Not found")
+    }
+
+    @Test
+    fun `getTopHeadlines returns network error when api throws IOException`() = runTest {
+        val exception = IOException("No network")
+        coEvery { mockRemoteDataSource.getTopHeadlines("bbc-news") } throws exception
+
+        val result = repository.getTopHeadlines("bbc-news")
+
+        assertThat(result).isInstanceOf(Result.Failure::class.java)
+        val failure = result as Result.Failure
+        assertThat(failure.error).isInstanceOf(com.mehdi.bbcnews.domain.result.DomainError.Network::class.java)
+        val networkError = failure.error as com.mehdi.bbcnews.domain.result.DomainError.Network
+        assertThat(networkError.exception).isEqualTo(exception)
+    }
+
+    @Test
+    fun `getTopHeadlines returns unknown error when api throws unexpected exception`() = runTest {
+        val exception = IllegalStateException("Boom")
+        coEvery { mockRemoteDataSource.getTopHeadlines("bbc-news") } throws exception
+
+        val result = repository.getTopHeadlines("bbc-news")
+
+        assertThat(result).isInstanceOf(Result.Failure::class.java)
+        val failure = result as Result.Failure
+        assertThat(failure.error).isInstanceOf(com.mehdi.bbcnews.domain.result.DomainError.Unknown::class.java)
+        val unknownError = failure.error as com.mehdi.bbcnews.domain.result.DomainError.Unknown
+        assertThat(unknownError.exception).isEqualTo(exception)
     }
 }
