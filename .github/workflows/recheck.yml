@@ -11,24 +11,31 @@ permissions:
 
 jobs:
   recheck:
-    if: >
-      github.event.issue.pull_request &&
-      contains(toLower(github.event.comment.body), 'recheck')
-
+    if: ${{ github.event.issue.pull_request && contains(toLower(github.event.comment.body), 'recheck') }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: Trigger main CI workflow again
+      - name: Debug event
+        run: |
+          echo "comment=${{ github.event.comment.body }}"
+          echo "assoc=${{ github.event.comment.author_association }}"
+          echo "issue_number=${{ github.event.issue.number }}"
+
+      - name: Trigger main workflow again
         uses: actions/github-script@v7
         with:
           script: |
-            const allowed = ['MEMBER','OWNER','COLLABORATOR'];
+            const allowed = ['MEMBER','OWNER','COLLABORATOR','CONTRIBUTOR'];
             const assoc = context.payload.comment.author_association;
+            core.info(`author_association=${assoc}`);
+
             if (!allowed.includes(assoc)) {
               core.setFailed(`Not allowed: ${assoc}`);
               return;
             }
 
             const prNumber = context.payload.issue.number;
+
             const pr = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -36,10 +43,16 @@ jobs:
             });
 
             const ref = pr.data.head.ref;
+            core.info(`Dispatching workflow main.yml on ref=${ref}`);
 
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'main.yml',
-              ref: ref,
-            });
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'main.yml',
+                ref: ref,
+              });
+              core.info('Dispatch OK');
+            } catch (e) {
+              core.setFailed(`Dispatch failed: ${e.message}`);
+            }
