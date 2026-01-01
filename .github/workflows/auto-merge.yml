@@ -1,0 +1,57 @@
+name: Auto-merge on label
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  enable-auto-merge:
+    if: github.event.label.name == 'merge'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check status checks
+        id: checks
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.payload.pull_request.head.sha;
+            const { owner, repo } = context.repo;
+
+            const [statusResponse, checksResponse] = await Promise.all([
+              github.rest.repos.getCombinedStatusForRef({ owner, repo, ref: sha }),
+              github.rest.checks.listForRef({ owner, repo, ref: sha }),
+            ]);
+
+            const statusStates = statusResponse.data.statuses.map((status) => status.state);
+            const checkRuns = checksResponse.data.check_runs;
+
+            const hasStatuses = statusStates.length > 0;
+            const hasCheckRuns = checkRuns.length > 0;
+
+            const statusesOk = statusStates.every((state) => state === "success");
+            const checkRunsOk = checkRuns.every(
+              (checkRun) => checkRun.status === "completed" && checkRun.conclusion === "success"
+            );
+
+            const ok = (hasStatuses || hasCheckRuns) && statusesOk && checkRunsOk;
+
+            core.info(`Status contexts: ${statusStates.join(", ") || "none"}`);
+            core.info(
+              `Check runs: ${checkRuns
+                .map((run) => `${run.name}=${run.status}/${run.conclusion}`)
+                .join(", ") || "none"}`
+            );
+            core.setOutput("ok", ok ? "true" : "false");
+      - name: Enable auto-merge
+        if: steps.checks.outputs.ok == 'true'
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: merge
+          token: ${{ secrets.GITHUB_TOKEN }}
