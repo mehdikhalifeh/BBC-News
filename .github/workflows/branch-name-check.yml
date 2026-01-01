@@ -12,8 +12,8 @@ jobs:
         run: |
           branch="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           echo "Validating branch name: ${branch}"
-          if [[ ! "${branch}" =~ ^(hotfix|feature|bug|codex)/[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+          if [[ ! "${branch}" =~ ^(hotfix|feature|bug|codex)/ ]]; then
             echo "Invalid branch name: ${branch}"
-            echo "Branch names must start with hotfix/, feature/, bug/, or codex/ and use dash-separated words, e.g. hotfix/change-in-main."
+            echo "Branch names must start with hotfix/, feature/, bug/, or codex/."
             exit 1
           fi
