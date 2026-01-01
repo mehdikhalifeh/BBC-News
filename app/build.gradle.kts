@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.detekt)
+    jacoco
 }
 
 android {
@@ -31,7 +32,9 @@ android {
     }
 
     buildTypes {
-        debug {}
+        debug {
+            isTestCoverageEnabled = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
