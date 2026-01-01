@@ -2,18 +2,19 @@ name: recheck
 
 on:
   issue_comment:
-    types: [created]
+    types: [created, edited]
 
 permissions:
   contents: read
   pull-requests: read
+  issues: read
 
 jobs:
   test:
     if: >-
       ${{
         github.event.issue.pull_request &&
-        contains(github.event.comment.body, 'recheck')
+        contains(toLower(github.event.comment.body), 'recheck')
       }}
     runs-on: ubuntu-latest
 
