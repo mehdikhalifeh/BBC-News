@@ -9,6 +9,7 @@ plugins {
     kotlin("plugin.parcelize")
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.detekt)
 }
 
 android {
