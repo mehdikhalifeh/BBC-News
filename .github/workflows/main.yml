@@ -2,10 +2,10 @@ name: main
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   push:
-    branches: [ "main" ]
-
+    branches: ["main"]
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
