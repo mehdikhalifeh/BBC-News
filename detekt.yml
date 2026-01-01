@@ -1,0 +1,37 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+
+config:
+  validation: true
+
+formatting:
+  active: true
+  autoCorrect: false
+  Indentation:
+    active: true
+    indentSize: 4
+    continuationIndentSize: 4
+  NoWildcardImports:
+    active: true
+  TrailingCommaOnDeclarationSite:
+    active: true
+  TrailingCommaOnCallSite:
+    active: true
+  FinalNewline:
+    active: true
+
+style:
+  MagicNumber:
+    active: false
+  WildcardImport:
+    active: false
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 80
+  LongParameterList:
+    active: true
+    functionThreshold: 10
+    constructorThreshold: 10
