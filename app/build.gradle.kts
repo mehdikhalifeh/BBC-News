@@ -13,6 +13,44 @@ plugins {
     jacoco
 }
 
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    val excludes =
+        listOf(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*"
+        )
+
+    classDirectories.setFrom(
+        fileTree("build/tmp/kotlin-classes/debug") {
+            exclude(excludes)
+        },
+        fileTree("build/intermediates/javac/debug") {
+            exclude(excludes)
+        }
+    )
+
+    sourceDirectories.setFrom(
+        files(
+            "src/main/java",
+            "src/main/kotlin"
+        )
+    )
+
+    executionData.setFrom(files("build/jacoco/testDebugUnitTest.exec"))
+}
+
 android {
     namespace = "com.mehdi.bbcnews"
     compileSdk = 36
