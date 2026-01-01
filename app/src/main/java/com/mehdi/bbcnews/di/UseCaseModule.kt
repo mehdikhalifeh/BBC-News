@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -18,7 +19,8 @@ object UseCaseModule {
     fun provideGetTopHeadlinesUseCase(
         repository: NewsRepository,
         newsSorter: NewsSorter,
+        @IoDispatcher dispatcher: CoroutineDispatcher
     ): GetTopHeadlinesUseCase {
-        return GetTopHeadlinesUseCase(repository, newsSorter)
+        return GetTopHeadlinesUseCase(repository, newsSorter, dispatcher)
     }
 }

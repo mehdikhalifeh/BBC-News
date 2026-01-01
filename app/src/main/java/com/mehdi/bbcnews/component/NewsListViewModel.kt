@@ -10,19 +10,18 @@ import com.mehdi.bbcnews.util.Constants.NEWS_SOURCE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 @HiltViewModel
 class NewsListViewModel @Inject constructor(
     private val getTopHeadlines: GetTopHeadlinesUseCase
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val _topHeadlines: MutableStateFlow<NewsListUiState> =
         MutableStateFlow(NewsListUiState.Loading)
-    val topHeadlines: StateFlow<NewsListUiState> = _topHeadlines
+    val topHeadlines: StateFlow<NewsListUiState> = _topHeadlines.asStateFlow()
 
     private var isRefreshing = false
 
@@ -30,28 +29,29 @@ class NewsListViewModel @Inject constructor(
         loadTopHeadlines()
     }
 
-    fun loadTopHeadlines() = viewModelScope.launch {
+    fun loadTopHeadlines() {
+        viewModelScope.launch {
+            fetchHeadlines()
+        }
+    }
+
+    fun onRefresh() {
+        if (isRefreshing) return
+        isRefreshing = true
+        viewModelScope.launch {
+            fetchHeadlines()
+            isRefreshing = false
+        }
+    }
+
+    private suspend fun fetchHeadlines() {
         getTopHeadlines(NEWS_SOURCE).collect { response ->
             val state = when (response) {
                 is Result.Success -> NewsListUiState.Content(response.data.toUi())
                 is Result.Failure -> NewsListUiState.Error(response.error)
                 Result.Loading -> NewsListUiState.Loading
             }
-            setTopHeadlinesValue(state)
+            _topHeadlines.value = state
         }
-    }
-
-    fun onRefresh() {
-        if (!isRefreshing) {
-            isRefreshing = true
-            viewModelScope.launch {
-                loadTopHeadlines()
-                isRefreshing = false
-            }
-        }
-    }
-
-    private fun setTopHeadlinesValue(state: NewsListUiState) {
-        _topHeadlines.value = state
     }
 }

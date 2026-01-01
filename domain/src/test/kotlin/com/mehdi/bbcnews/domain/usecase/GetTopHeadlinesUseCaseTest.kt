@@ -12,6 +12,7 @@ import com.mehdi.bbcnews.domain.sorter.NewsSorter
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -20,7 +21,7 @@ class GetTopHeadlinesUseCaseTest {
 
     private lateinit var getTopHeadlines: GetTopHeadlinesUseCase
     private val repository: NewsRepository = mockk()
-
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Test
     fun `call should emit Success when repository returns data`() = runTest {
@@ -46,7 +47,7 @@ class GetTopHeadlinesUseCaseTest {
         coEvery { repository.getTopHeadlines(source) } returns Result.Success(expectedResponse)
 
         val newsSorter = NewsSorter()
-        getTopHeadlines = GetTopHeadlinesUseCase(repository, newsSorter)
+        getTopHeadlines = GetTopHeadlinesUseCase(repository, newsSorter, testDispatcher)
 
         // When
         val flow = getTopHeadlines(source)
@@ -68,7 +69,7 @@ class GetTopHeadlinesUseCaseTest {
             val expectedError = DomainError.Network()
             coEvery { repository.getTopHeadlines(source) } returns Result.Failure(expectedError)
             val newsSorter = NewsSorter()
-            getTopHeadlines = GetTopHeadlinesUseCase(repository, newsSorter)
+            getTopHeadlines = GetTopHeadlinesUseCase(repository, newsSorter, testDispatcher)
 
             // When
             val flow = getTopHeadlines(source)
