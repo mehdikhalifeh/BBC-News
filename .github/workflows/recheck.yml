@@ -3,86 +3,26 @@ name: recheck
 on:
   issue_comment:
     types: [created]
+  workflow_dispatch:
 
 permissions:
-  actions: write
-  contents: read
-  pull-requests: read
   issues: write
+  pull-requests: read
 
 jobs:
-  recheck:
-    if: ${{ github.event.issue.pull_request }}
+  ping:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Handle recheck command
+      - name: Comment back (ping)
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const body = (context.payload.comment.body || '').trim().toLowerCase();
-
-            // فقط وقتی کار کن که دقیقا "recheck" (یا /recheck) تایپ شده باشه
-            if (!(body === 'recheck' || body === '/recheck')) {
-              core.info('No recheck command, exiting');
-              return;
-            }
-
-            const allowed = ['MEMBER','OWNER','COLLABORATOR','CONTRIBUTOR'];
-            const assoc = context.payload.comment.author_association;
-
-            if (!allowed.includes(assoc)) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
-                body: `❌ Not allowed to run recheck (author_association=${assoc}).`
-              });
-              core.setFailed(`Not allowed: ${assoc}`);
-              return;
-            }
-
-            const prNumber = context.payload.issue.number;
-
-            const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-            });
-
-            const ref = pr.data.head.ref;
-
-            // اول کامنت بده که فهمیدیم
+            const isPR = !!context.payload.issue.pull_request;
+            const body = context.payload.comment?.body || '';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: prNumber,
-              body: `🔄 Recheck received. Re-triggering **main.yml** on branch \`${ref}\`...`
+              issue_number: context.payload.issue.number,
+              body: `✅ recheck workflow triggered.\n- isPR: ${isPR}\n- comment: ${JSON.stringify(body)}`
             });
-
-            try {
-              await github.rest.actions.createWorkflowDispatch({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: 'main.yml',
-                ref: ref,
-              });
-
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: `✅ Dispatched **main.yml** on \`${ref}\`.`
-              });
-
-              core.info('Dispatch OK');
-            } catch (e) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: `❌ Dispatch failed: ${e.message}`
-              });
-              core.setFailed(`Dispatch failed: ${e.message}`);
-            }
