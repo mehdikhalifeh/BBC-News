@@ -1,0 +1,97 @@
+name: Auto-merge on label
+
+on:
+  pull_request:
+    types: [labeled]
+  workflow_run:
+    workflows: ["main"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  enable-auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check labels and status checks
+        id: checks
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const eventName = context.eventName;
+
+            let pullRequestNumber;
+            let sha;
+
+            if (eventName === "pull_request") {
+              if (context.payload.label?.name !== "merge") {
+                core.info("Merge label not applied; skipping.");
+                core.setOutput("ok", "false");
+                return;
+              }
+
+              pullRequestNumber = context.payload.pull_request.number;
+              sha = context.payload.pull_request.head.sha;
+            } else if (eventName === "workflow_run") {
+              const pullRequests = context.payload.workflow_run.pull_requests;
+              if (!pullRequests || pullRequests.length === 0) {
+                core.info("Workflow run is not associated with a pull request; skipping.");
+                core.setOutput("ok", "false");
+                return;
+              }
+
+              pullRequestNumber = pullRequests[0].number;
+              const prResponse = await github.rest.pulls.get({ owner, repo, pull_number: pullRequestNumber });
+              const labels = prResponse.data.labels.map((label) => label.name);
+
+              if (!labels.includes("merge")) {
+                core.info("Merge label not present; skipping.");
+                core.setOutput("ok", "false");
+                return;
+              }
+
+              sha = prResponse.data.head.sha;
+            } else {
+              core.info(`Unsupported event: ${eventName}`);
+              core.setOutput("ok", "false");
+              return;
+            }
+
+            const [statusResponse, checksResponse] = await Promise.all([
+              github.rest.repos.getCombinedStatusForRef({ owner, repo, ref: sha }),
+              github.rest.checks.listForRef({ owner, repo, ref: sha }),
+            ]);
+
+            const statusStates = statusResponse.data.statuses.map((status) => status.state);
+            const checkRuns = checksResponse.data.check_runs;
+
+            const hasStatuses = statusStates.length > 0;
+            const hasCheckRuns = checkRuns.length > 0;
+
+            const statusesOk = statusStates.every((state) => state === "success");
+            const checkRunsOk = checkRuns.every(
+              (checkRun) => checkRun.status === "completed" && checkRun.conclusion === "success"
+            );
+
+            const ok = (hasStatuses || hasCheckRuns) && statusesOk && checkRunsOk;
+
+            core.info(`Status contexts: ${statusStates.join(", ") || "none"}`);
+            core.info(
+              `Check runs: ${checkRuns
+                .map((run) => `${run.name}=${run.status}/${run.conclusion}`)
+                .join(", ") || "none"}`
+            );
+            core.setOutput("pull_request_number", pullRequestNumber.toString());
+            core.setOutput("ok", ok ? "true" : "false");
+      - name: Enable auto-merge
+        if: steps.checks.outputs.ok == 'true'
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ steps.checks.outputs.pull_request_number }}
+          merge-method: merge
+          token: ${{ secrets.GITHUB_TOKEN }}
