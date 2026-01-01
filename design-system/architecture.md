@@ -36,7 +36,12 @@ Key traits:
 
 ## High-Level Component Diagram
 ```
-+------------------+         +---------------------+         +------------------+
+                            +-------------------+
+                            |   DI (Hilt)       |
+                            |  Module Graph     |
+                            +---------+---------+
+                                      |
++------------------+         +--------v------------+         +------------------+
 |   UI (Compose)   |  --->   |   Domain Use Cases  |  --->   |    Repositories  |
 +------------------+         +---------------------+         +------------------+
          ^                            |                               |
@@ -49,6 +54,38 @@ Key traits:
          +-----------------------------------------------------------+
                          Results Flow Back to UI
 ```
+
+## Layer Responsibilities
+**Presentation layer (app)**
+- Compose UI, navigation, view models, and UI state.
+- Translates user intent into domain use case calls.
+- Observes domain results as state and renders UI.
+
+**Domain layer**
+- Pure Kotlin business logic: use cases, entities, and interfaces.
+- Defines repository contracts that the data layer implements.
+- Remains platform-agnostic and test-friendly.
+
+**Data layer**
+- Implements repository interfaces using network and local sources.
+- Maps DTOs to domain entities.
+- Owns caching, paging, and data-source orchestration.
+
+## Module Big Picture
+**app (presentation)**
+- Entry point and UI wiring (Compose, navigation, view models).
+- Hilt setup for the application graph and UI-scoped bindings.
+
+**domain**
+- Use cases and entities that represent the business model.
+- Repository interfaces and domain-level abstractions.
+
+**data**
+- Repository implementations and data-source coordination.
+- Network clients, DTOs, mappers, and caching logic.
+
+**design-system**
+- Reusable UI components, typography, colors, and theming.
 
 ## Core Design Principles
 - **Modularity**: Each module has a distinct responsibility.
