@@ -22,23 +22,24 @@ class GetTopHeadlinesUseCaseTest {
     private lateinit var getTopHeadlines: GetTopHeadlinesUseCase
     private val repository: NewsRepository = mockk()
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val newsSorter = NewsSorter()
 
     @Test
     fun `call should emit Success when repository returns data`() = runTest {
         // Given
         val source = "bbc-news"
+        val olderArticle = buildArticle(
+            title = "Older",
+            publishedAt = "2023-04-22T14:37:14.7569359Z"
+        )
+        val newerArticle = buildArticle(
+            title = "Newer",
+            publishedAt = "2023-04-22T15:37:19.3827616Z"
+        )
         val expectedResponse = NewsResponse(
             listOf(
-                NewsArticle(
-                    author = "BBC News",
-                    content = "A look back at some of the funniest moments from Dame Edna Everage.\r\nShe was one of comedian Barry Humphries' most known characters. Humphries has died at the age of 89.\r\nRead more about the star's l… [+8 chars]",
-                    description = "A look back at some laughs from the comedian, Barry Humphries, best known for character Dame Edna Everage.",
-                    publishedAt = "2023-04-22T15:37:19.3827616Z",
-                    source = NewsSource(id = "bbc-news", name = "BBC News"),
-                    title = "Dame Edna's memorable moments in 60 seconds",
-                    url = "http://www.bbc.co.uk/news/entertainment-arts-65358301",
-                    urlToImage = "https://ichef.bbci.co.uk/news/1024/branded_news/4EE2/production/_129449102_b5f6c0752bee38fc657f098fb3387e303ad56ccb0_290_2364_13291000x563.jpg"
-                )
+                olderArticle,
+                newerArticle
             ),
             "ok",
             1
@@ -46,7 +47,6 @@ class GetTopHeadlinesUseCaseTest {
 
         coEvery { repository.getTopHeadlines(source) } returns Result.Success(expectedResponse)
 
-        val newsSorter = NewsSorter()
         getTopHeadlines = GetTopHeadlinesUseCase(repository, newsSorter, testDispatcher)
 
         // When
@@ -55,7 +55,9 @@ class GetTopHeadlinesUseCaseTest {
         // Then
         flow.test {
             assertThat(Result.Loading).isEqualTo(awaitItem())
-            assertThat(Result.Success(expectedResponse)).isEqualTo(awaitItem())
+            val success = awaitItem() as Result.Success
+            assertThat(success.data.articles.first().title).isEqualTo("Newer")
+            assertThat(success.data.articles.last().title).isEqualTo("Older")
             awaitComplete()
         }
     }
@@ -68,7 +70,6 @@ class GetTopHeadlinesUseCaseTest {
             val source = "bbc-news"
             val expectedError = DomainError.Network()
             coEvery { repository.getTopHeadlines(source) } returns Result.Failure(expectedError)
-            val newsSorter = NewsSorter()
             getTopHeadlines = GetTopHeadlinesUseCase(repository, newsSorter, testDispatcher)
 
             // When
@@ -81,4 +82,38 @@ class GetTopHeadlinesUseCaseTest {
                 awaitComplete()
             }
         }
+
+    @Test
+    fun `call should emit Loading when repository returns Loading`() = runTest {
+        // Given
+        val source = "bbc-news"
+        coEvery { repository.getTopHeadlines(source) } returns Result.Loading
+        getTopHeadlines = GetTopHeadlinesUseCase(repository, newsSorter, testDispatcher)
+
+        // When
+        val flow = getTopHeadlines(source)
+
+        // Then
+        flow.test {
+            assertThat(Result.Loading).isEqualTo(awaitItem())
+            assertThat(Result.Loading).isEqualTo(awaitItem())
+            awaitComplete()
+        }
+    }
+
+    private fun buildArticle(
+        title: String,
+        publishedAt: String,
+    ): NewsArticle {
+        return NewsArticle(
+            author = "BBC News",
+            content = "Content",
+            description = "Description",
+            publishedAt = publishedAt,
+            source = NewsSource(id = "bbc-news", name = "BBC News"),
+            title = title,
+            url = "http://www.bbc.co.uk/news/example",
+            urlToImage = "https://ichef.bbci.co.uk/news/example.jpg"
+        )
+    }
 }
