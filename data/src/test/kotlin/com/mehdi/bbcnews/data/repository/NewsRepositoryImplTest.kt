@@ -78,7 +78,7 @@ class NewsRepositoryImplTest {
         assertThat(failure.error).isInstanceOf(com.mehdi.bbcnews.domain.result.DomainError.Http::class.java)
         val httpError = failure.error as com.mehdi.bbcnews.domain.result.DomainError.Http
         assertThat(httpError.code).isEqualTo(404)
-        assertThat(httpError.message).contains("Not found")
+        assertThat(httpError.message).isEqualTo(exception.message())
     }
 
     @Test
@@ -92,7 +92,7 @@ class NewsRepositoryImplTest {
         val failure = result as Result.Failure
         assertThat(failure.error).isInstanceOf(com.mehdi.bbcnews.domain.result.DomainError.Network::class.java)
         val networkError = failure.error as com.mehdi.bbcnews.domain.result.DomainError.Network
-        assertThat(networkError.exception).isEqualTo(exception)
+        assertThat(networkError.cause).isEqualTo(exception)
     }
 
     @Test
@@ -106,6 +106,6 @@ class NewsRepositoryImplTest {
         val failure = result as Result.Failure
         assertThat(failure.error).isInstanceOf(com.mehdi.bbcnews.domain.result.DomainError.Unknown::class.java)
         val unknownError = failure.error as com.mehdi.bbcnews.domain.result.DomainError.Unknown
-        assertThat(unknownError.exception).isEqualTo(exception)
+        assertThat(unknownError.cause).isEqualTo(exception)
     }
 }
