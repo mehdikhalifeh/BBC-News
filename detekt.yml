@@ -1,5 +1,5 @@
 build:
-  maxIssues: 0
+  maxIssues: 1000
   excludeCorrectable: false
 
 config:
@@ -11,7 +11,6 @@ formatting:
   Indentation:
     active: true
     indentSize: 4
-    continuationIndentSize: 4
   NoWildcardImports:
     active: true
   TrailingCommaOnDeclarationSite:
