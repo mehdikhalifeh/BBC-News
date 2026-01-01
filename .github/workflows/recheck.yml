@@ -2,27 +2,52 @@ name: recheck
 
 on:
   issue_comment:
-    types: [created]
+    types: [created, edited]
   workflow_dispatch:
 
 permissions:
-  issues: write
+  contents: read
   pull-requests: read
+  issues: read
 
 jobs:
-  ping:
+  test:
+    if: >-
+      ${{
+        github.event.issue.pull_request &&
+        contains(toLower(github.event.comment.body), 'recheck')
+      }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: Comment back (ping)
-        uses: actions/github-script@v7
+      - name: Dump event payload
+        run: cat "$GITHUB_EVENT_PATH"
+
+      - name: Show comment body
+        run: echo "${{ github.event.comment.body }}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const isPR = !!context.payload.issue.pull_request;
-            const body = context.payload.comment?.body || '';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.issue.number,
-              body: `✅ recheck workflow triggered.\n- isPR: ${isPR}\n- comment: ${JSON.stringify(body)}`
-            });
+          ref: refs/pull/${{ github.event.issue.number }}/merge
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 36
+          build-tools: 36.0.0
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Run unit tests
+        run: ./gradlew test --stacktrace
+
+      - name: Run lint
+        run: ./gradlew lint --stacktrace
