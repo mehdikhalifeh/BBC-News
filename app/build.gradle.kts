@@ -1,4 +1,4 @@
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Project
 import java.util.Properties
 
@@ -11,6 +11,52 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.detekt)
     jacoco
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports."
+
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    val excludes =
+        listOf(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*"
+        )
+
+    classDirectories.setFrom(
+        fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+            exclude(excludes)
+        },
+        fileTree("${layout.buildDirectory.get()}/intermediates/javac/debug") {
+            exclude(excludes)
+        }
+    )
+
+    sourceDirectories.setFrom(
+        files(
+            "src/main/java",
+            "src/main/kotlin"
+        )
+    )
+
+    executionData.setFrom(
+        fileTree(layout.buildDirectory.get()) {
+            include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+            include("jacoco/testDebugUnitTest.exec")
+        }
+    )
 }
 
 android {
@@ -93,7 +139,7 @@ fun configureBuildConfigFields(project: Project) {
 
     val apiKeyValue = buildConfigLiteral(props.getProperty("API_KEY", ""))
     val urlValue = buildConfigLiteral(props.getProperty("URL", ""))
-    project.extensions.getByType<BaseAppModuleExtension>().buildTypes.configureEach {
+    project.extensions.getByType<ApplicationExtension>().buildTypes.configureEach {
         buildConfigField("String", "API_KEY", apiKeyValue)
         buildConfigField("String", "URL", urlValue)
     }
