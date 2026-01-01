@@ -45,10 +45,10 @@ class NewsListViewModel @Inject constructor(
     }
 
     private suspend fun fetchHeadlines() {
-        getTopHeadlines(NEWS_SOURCE).collect { responses ->
-            val state = when (responses) {
-                is Result.Success -> NewsListUiState.Content(responses.data.toUi())
-                is Result.Failure -> NewsListUiState.Error(responses.error)
+        getTopHeadlines(NEWS_SOURCE).collect { response ->
+            val state = when (response) {
+                is Result.Success -> NewsListUiState.Content(response.data.toUi())
+                is Result.Failure -> NewsListUiState.Error(response.error)
                 Result.Loading -> NewsListUiState.Loading
             }
             _topHeadlines.value = state
