@@ -2,45 +2,48 @@ name: recheck
 
 on:
   issue_comment:
-    types: [created, edited]
+    types: [created]
 
 permissions:
+  actions: write
   contents: read
   pull-requests: read
-  issues: read
 
 jobs:
-  test:
-    if: >-
-      ${{
-        github.event.issue.pull_request &&
-        contains(toLower(github.event.comment.body), 'recheck')
-      }}
+  recheck:
+    if: >
+      github.event.issue.pull_request &&
+      contains(toLower(github.event.comment.body), 'recheck')
+
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Trigger CI again
+        uses: actions/github-script@v7
         with:
-          ref: refs/pull/${{ github.event.issue.number }}/merge
+          script: |
+            // اجازه بده فقط اعضای تیم تریگر کنن (پیشنهادی)
+            const allowed = ['MEMBER','OWNER','COLLABORATOR'];
+            const assoc = context.payload.comment.author_association;
+            if (!allowed.includes(assoc)) {
+              core.setFailed(`Not allowed: ${assoc}`);
+              return;
+            }
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: "temurin"
-          java-version: "21"
+            const prNumber = context.payload.issue.number;
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          api-level: 36
-          build-tools: 36.0.0
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
 
-      - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v3
+            const ref = pr.data.head.ref;
 
-      - name: Run unit tests
-        run: ./gradlew test --stacktrace
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'ci.yml',
+              ref: ref,
+            });
 
-      - name: Run lint
-        run: ./gradlew lint --stacktrace
+            core.info(`Dispatched CI on ${ref}`);
