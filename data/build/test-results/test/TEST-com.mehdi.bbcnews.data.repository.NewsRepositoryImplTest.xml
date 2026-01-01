@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mehdi.bbcnews.data.repository.NewsRepositoryImplTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-12-31T22:13:45.480Z" hostname="DESKTOP-KLIOH9S" time="0.144">
-  <properties/>
-  <testcase name="getTopHeadlines returns expected result" classname="com.mehdi.bbcnews.data.repository.NewsRepositoryImplTest" time="0.136"/>
-  <testcase name="getTopHeadlines returns empty response" classname="com.mehdi.bbcnews.data.repository.NewsRepositoryImplTest" time="0.008"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
